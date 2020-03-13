@@ -534,7 +534,7 @@ class BoolQProcessor(DataProcessor):
 
     def get_dev_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(self._read_tsv(os.path.join(data_dir, "val.jsonl")), "val")
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "val.jsonl")), "dev")
 
     def get_labels(self):
         """See base class."""
