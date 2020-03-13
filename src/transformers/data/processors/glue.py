@@ -546,6 +546,7 @@ class BoolQProcessor(DataProcessor):
         for (i, line) in enumerate(lines):
             if i == 0:
                 continue
+            data = json.loads(line[0])
             guid = "%s-%s" % (set_type, line[0])
             text_a = line["question"]
             text_b = line["passage"]
