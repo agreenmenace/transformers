@@ -17,6 +17,7 @@
 
 import logging
 import os
+import json
 
 from ...file_utils import is_tf_available
 from .utils import DataProcessor, InputExample, InputFeatures
@@ -90,7 +91,7 @@ def glue_convert_examples_to_features(
         if ex_index % 10000 == 0:
             logger.info("Writing example %d/%d" % (ex_index, len_examples))
 
-        inputs = tokenizer.encode_plus(example.text_a, example.text_b, add_special_tokens=True, max_length=max_length,)
+        inputs = tokenizer.encode_plus(example.text_a, example.text_b, add_special_tokens=True, max_length=max_length, return_token_type_ids=True)
         input_ids, token_type_ids = inputs["input_ids"], inputs["token_type_ids"]
 
         # The mask has 1 for real tokens and 0 for padding tokens. Only real
@@ -522,8 +523,8 @@ class BoolQProcessor(DataProcessor):
         """See base class."""
         return InputExample(
             tensor_dict["idx"].numpy(),
-            tensor_dict["passage"].numpy().decode("utf-8"),
             tensor_dict["question"].numpy().decode("utf-8"),
+            tensor_dict["passage"].numpy().decode("utf-8"),
             str(tensor_dict["label"].numpy()),
         )
 
@@ -546,9 +547,9 @@ class BoolQProcessor(DataProcessor):
             if i == 0:
                 continue
             guid = "%s-%s" % (set_type, line[0])
-            text_a = line[1]
-            text_b = line[2]
-            label = line[-1]
+            text_a = line["question"]
+            text_b = line["passage"]
+            label = line["label"]
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
     
